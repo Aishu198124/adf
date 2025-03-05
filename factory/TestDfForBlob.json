@@ -1,0 +1,9 @@
+{
+	"name": "TestDfForBlob",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "0815c0a9-5018-465c-b531-e2958d3b43e5",
+		"tenantId": "2800c0a0-70e9-49be-8733-faeaa6aced99"
+	}
+}
