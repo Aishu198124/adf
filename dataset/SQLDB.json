@@ -1,0 +1,21 @@
+{
+	"name": "SQLDB",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SQL_DataBase_LS_ETL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Country_Code_Country",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "staging_schema_countryDetails"
+		}
+	}
+}
