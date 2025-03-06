@@ -9,14 +9,20 @@
 					"referenceName": "ForEachActivity",
 					"type": "PipelineReference"
 				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "REST_API_To_SQL_BD",
+					"type": "PipelineReference"
+				}
 			}
 		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
 				"frequency": "Minute",
-				"interval": 1,
-				"startTime": "2025-03-05T17:23:00",
+				"interval": 2,
+				"startTime": "2025-03-05T18:00:00",
 				"endTime": "2025-03-05T17:25:00",
 				"timeZone": "India Standard Time"
 			}
