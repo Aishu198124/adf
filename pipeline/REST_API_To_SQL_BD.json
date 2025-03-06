@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data Activity For API To DB",
+				"name": "Copy data Activity For API To Staging Schema DB",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -74,7 +74,7 @@
 									"path": "$['address']['street']"
 								},
 								"sink": {
-									"name": "street",
+									"name": "address_street",
 									"type": "String"
 								}
 							},
@@ -83,7 +83,7 @@
 									"path": "$['address']['suite']"
 								},
 								"sink": {
-									"name": "suite",
+									"name": "address_suite",
 									"type": "String"
 								}
 							},
@@ -92,7 +92,7 @@
 									"path": "$['address']['city']"
 								},
 								"sink": {
-									"name": "city",
+									"name": "address_city",
 									"type": "String"
 								}
 							},
@@ -101,7 +101,7 @@
 									"path": "$['address']['zipcode']"
 								},
 								"sink": {
-									"name": "zipcode",
+									"name": "address_zipcode",
 									"type": "String"
 								}
 							},
@@ -146,7 +146,7 @@
 									"path": "$['company']['name']"
 								},
 								"sink": {
-									"name": "name",
+									"name": "company_name",
 									"type": "String"
 								}
 							},
@@ -168,7 +168,8 @@
 									"type": "String"
 								}
 							}
-						]
+						],
+						"collectionReference": ""
 					}
 				},
 				"inputs": [
@@ -183,6 +184,33 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Stored procedure For Transforming Data",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy data Activity For API To Staging Schema DB",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[CreateAndInsertUsers]"
+				},
+				"linkedServiceName": {
+					"referenceName": "SQL_DataBase_LS",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"annotations": []
