@@ -35,6 +35,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'SqlServer2'"
 		},
+		"SQL_DataBase_LS_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'SQL_DataBase_LS'"
+		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://KeyVaultAishwarya.vault.azure.net/"
@@ -75,6 +79,10 @@
 			"type": "string",
 			"defaultValue": "adminaishwarya"
 		},
+		"RestService1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.github.com"
+		},
 		"SqlServer1_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "sqlserverforblob"
@@ -98,6 +106,22 @@
 		"SqlServer2_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "aishwarya"
+		},
+		"Typicode_Rest_LS_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://jsonplaceholder.typicode.com"
+		},
+		"SQL_DataBase_LS_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "adf-assessment-server.database.windows.net"
+		},
+		"SQL_DataBase_LS_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "Users"
+		},
+		"SQL_DataBase_LS_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "AdminAishwarya"
 		}
 	},
 	"variables": {
@@ -930,6 +954,21 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/RestService1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('RestService1_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": false,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SqlServer1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -974,6 +1013,486 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Typicode_Rest_LS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('Typicode_Rest_LS_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": false,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/REST API To SQL DB Trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "ForEachActivity",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					},
+					{
+						"pipelineReference": {
+							"referenceName": "REST_API_To_SQL_BD",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Minute",
+						"interval": 2,
+						"startTime": "2025-03-06T18:00:00",
+						"endTime": "2025-03-06T18:25:00",
+						"timeZone": "India Standard Time"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/ForEachActivity')]",
+				"[concat(variables('factoryId'), '/pipelines/REST_API_To_SQL_BD')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/REST_API_To_SQL_BD')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data Activity For API To Staging Schema DB",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"paginationRules": {
+									"supportRFC5988": "true"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['id']"
+										},
+										"sink": {
+											"name": "id",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['name']"
+										},
+										"sink": {
+											"name": "name",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['username']"
+										},
+										"sink": {
+											"name": "username",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['email']"
+										},
+										"sink": {
+											"name": "email",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['address']['street']"
+										},
+										"sink": {
+											"name": "address_street",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['address']['suite']"
+										},
+										"sink": {
+											"name": "address_suite",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['address']['city']"
+										},
+										"sink": {
+											"name": "address_city",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['address']['zipcode']"
+										},
+										"sink": {
+											"name": "address_zipcode",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['address']['geo']['lat']"
+										},
+										"sink": {
+											"name": "geo_lat",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"path": "$['address']['geo']['lng']"
+										},
+										"sink": {
+											"name": "geo_lng",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"path": "$['phone']"
+										},
+										"sink": {
+											"name": "phone",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['website']"
+										},
+										"sink": {
+											"name": "website",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['company']['name']"
+										},
+										"sink": {
+											"name": "company_name",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['company']['catchPhrase']"
+										},
+										"sink": {
+											"name": "company_catchPhrase",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['company']['bs']"
+										},
+										"sink": {
+											"name": "company_bs",
+											"type": "String"
+										}
+									}
+								],
+								"collectionReference": ""
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "RestResource",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SQL_DataBase_Dataset",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Stored procedure For Transforming Data",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Copy data Activity For API To Staging Schema DB",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[CreateAndInsertUsers]"
+						},
+						"linkedServiceName": {
+							"referenceName": "SQL_DataBase_LS",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/RestResource')]",
+				"[concat(variables('factoryId'), '/datasets/SQL_DataBase_Dataset')]",
+				"[concat(variables('factoryId'), '/linkedServices/SQL_DataBase_LS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestResource')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Typicode_Rest_LS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": "/users"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Typicode_Rest_LS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_DataBase_LS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('SQL_DataBase_LS_properties_typeProperties_server')]",
+					"database": "[parameters('SQL_DataBase_LS_properties_typeProperties_database')]",
+					"encrypt": "optional",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('SQL_DataBase_LS_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('SQL_DataBase_LS_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable3')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SQL_DataBase_LS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "name",
+						"type": "varchar"
+					},
+					{
+						"name": "username",
+						"type": "varchar"
+					},
+					{
+						"name": "email",
+						"type": "varchar"
+					},
+					{
+						"name": "phone",
+						"type": "varchar"
+					},
+					{
+						"name": "website",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "users"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SQL_DataBase_LS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQL_DataBase_Dataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SQL_DataBase_LS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "name",
+						"type": "varchar"
+					},
+					{
+						"name": "username",
+						"type": "varchar"
+					},
+					{
+						"name": "email",
+						"type": "varchar"
+					},
+					{
+						"name": "phone",
+						"type": "varchar"
+					},
+					{
+						"name": "website",
+						"type": "varchar"
+					},
+					{
+						"name": "street",
+						"type": "varchar"
+					},
+					{
+						"name": "suite",
+						"type": "varchar"
+					},
+					{
+						"name": "city",
+						"type": "varchar"
+					},
+					{
+						"name": "zipcode",
+						"type": "varchar"
+					},
+					{
+						"name": "geo_lat",
+						"type": "decimal",
+						"precision": 10,
+						"scale": 7
+					},
+					{
+						"name": "geo_lng",
+						"type": "decimal",
+						"precision": 10,
+						"scale": 7
+					},
+					{
+						"name": "company_name",
+						"type": "varchar"
+					},
+					{
+						"name": "company_catchPhrase",
+						"type": "varchar"
+					},
+					{
+						"name": "company_bs",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "staging_schema_users"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SQL_DataBase_LS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestResource1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Typicode_Rest_LS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": "/users"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Typicode_Rest_LS')]"
+			]
 		}
 	]
 }

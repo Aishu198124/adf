@@ -35,6 +35,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'SqlServer2'"
 		},
+		"SQL_DataBase_LS_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'SQL_DataBase_LS'"
+		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://KeyVaultAishwarya.vault.azure.net/"
@@ -75,6 +79,10 @@
 			"type": "string",
 			"defaultValue": "adminaishwarya"
 		},
+		"RestService1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.github.com"
+		},
 		"SqlServer1_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "sqlserverforblob"
@@ -98,6 +106,22 @@
 		"SqlServer2_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "aishwarya"
+		},
+		"Typicode_Rest_LS_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://jsonplaceholder.typicode.com"
+		},
+		"SQL_DataBase_LS_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "adf-assessment-server.database.windows.net"
+		},
+		"SQL_DataBase_LS_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "Users"
+		},
+		"SQL_DataBase_LS_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "AdminAishwarya"
 		},
 		"containerUri": {
 			"type": "string",
@@ -147,6 +171,9 @@
 					"SqlServer2_password": {
 						"value": "[parameters('SqlServer2_password')]"
 					},
+					"SQL_DataBase_LS_password": {
+						"value": "[parameters('SQL_DataBase_LS_password')]"
+					},
 					"AzureKeyVault1_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
 					},
@@ -177,6 +204,9 @@
 					"AzureSqlDatabase3_properties_typeProperties_userName": {
 						"value": "[parameters('AzureSqlDatabase3_properties_typeProperties_userName')]"
 					},
+					"RestService1_properties_typeProperties_url": {
+						"value": "[parameters('RestService1_properties_typeProperties_url')]"
+					},
 					"SqlServer1_properties_typeProperties_server": {
 						"value": "[parameters('SqlServer1_properties_typeProperties_server')]"
 					},
@@ -194,10 +224,42 @@
 					},
 					"SqlServer2_properties_typeProperties_userName": {
 						"value": "[parameters('SqlServer2_properties_typeProperties_userName')]"
+					},
+					"Typicode_Rest_LS_properties_typeProperties_url": {
+						"value": "[parameters('Typicode_Rest_LS_properties_typeProperties_url')]"
+					},
+					"SQL_DataBase_LS_properties_typeProperties_server": {
+						"value": "[parameters('SQL_DataBase_LS_properties_typeProperties_server')]"
+					},
+					"SQL_DataBase_LS_properties_typeProperties_database": {
+						"value": "[parameters('SQL_DataBase_LS_properties_typeProperties_database')]"
+					},
+					"SQL_DataBase_LS_properties_typeProperties_userName": {
+						"value": "[parameters('SQL_DataBase_LS_properties_typeProperties_userName')]"
 					}
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "TestDfForBlob_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'TestDfForBlob_ArmTemplate_0')]"
+			]
 		}
 	]
 }

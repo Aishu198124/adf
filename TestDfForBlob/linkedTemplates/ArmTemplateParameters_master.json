@@ -26,6 +26,9 @@
 		"SqlServer2_password": {
 			"value": ""
 		},
+		"SQL_DataBase_LS_password": {
+			"value": ""
+		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"value": "https://KeyVaultAishwarya.vault.azure.net/"
 		},
@@ -56,6 +59,9 @@
 		"AzureSqlDatabase3_properties_typeProperties_userName": {
 			"value": "adminaishwarya"
 		},
+		"RestService1_properties_typeProperties_url": {
+			"value": "https://api.github.com"
+		},
 		"SqlServer1_properties_typeProperties_server": {
 			"value": "sqlserverforblob"
 		},
@@ -73,6 +79,18 @@
 		},
 		"SqlServer2_properties_typeProperties_userName": {
 			"value": "aishwarya"
+		},
+		"Typicode_Rest_LS_properties_typeProperties_url": {
+			"value": "https://jsonplaceholder.typicode.com"
+		},
+		"SQL_DataBase_LS_properties_typeProperties_server": {
+			"value": "adf-assessment-server.database.windows.net"
+		},
+		"SQL_DataBase_LS_properties_typeProperties_database": {
+			"value": "Users"
+		},
+		"SQL_DataBase_LS_properties_typeProperties_userName": {
+			"value": "AdminAishwarya"
 		},
 		"containerUri": {
 			"value": ""
