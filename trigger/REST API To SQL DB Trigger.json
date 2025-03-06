@@ -1,5 +1,5 @@
 {
-	"name": "trigger1",
+	"name": "REST API To SQL DB Trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
