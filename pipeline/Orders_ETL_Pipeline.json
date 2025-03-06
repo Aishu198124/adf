@@ -1,10 +1,16 @@
 {
-	"name": "ForEachActivity",
+	"name": "Orders_ETL_Pipeline",
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
-				"type": "Copy",
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": []
+			},
+			{
+				"name": "Get Metadata1",
+				"type": "GetMetadata",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -13,10 +19,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [],
-				"typeProperties": {
-					"enableStaging": false
-				}
+				"userProperties": []
 			}
 		],
 		"annotations": []
