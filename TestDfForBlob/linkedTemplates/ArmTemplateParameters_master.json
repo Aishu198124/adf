@@ -20,13 +20,19 @@
 		"AzureSqlDatabase3_password": {
 			"value": ""
 		},
+		"BlobStorage_LS_connectionString": {
+			"value": ""
+		},
+		"SQL_DataBase_LS_password": {
+			"value": ""
+		},
+		"SQL_DataBase_LS_ETL_password": {
+			"value": ""
+		},
 		"SqlServer1_password": {
 			"value": ""
 		},
 		"SqlServer2_password": {
-			"value": ""
-		},
-		"SQL_DataBase_LS_password": {
 			"value": ""
 		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
@@ -62,6 +68,24 @@
 		"RestService1_properties_typeProperties_url": {
 			"value": "https://api.github.com"
 		},
+		"SQL_DataBase_LS_properties_typeProperties_server": {
+			"value": "adf-assessment-server.database.windows.net"
+		},
+		"SQL_DataBase_LS_properties_typeProperties_database": {
+			"value": "Users"
+		},
+		"SQL_DataBase_LS_properties_typeProperties_userName": {
+			"value": "AdminAishwarya"
+		},
+		"SQL_DataBase_LS_ETL_properties_typeProperties_server": {
+			"value": "adf-assessment-server.database.windows.net"
+		},
+		"SQL_DataBase_LS_ETL_properties_typeProperties_database": {
+			"value": "Orders"
+		},
+		"SQL_DataBase_LS_ETL_properties_typeProperties_userName": {
+			"value": "AdminAishwarya"
+		},
 		"SqlServer1_properties_typeProperties_server": {
 			"value": "sqlserverforblob"
 		},
@@ -82,15 +106,6 @@
 		},
 		"Typicode_Rest_LS_properties_typeProperties_url": {
 			"value": "https://jsonplaceholder.typicode.com"
-		},
-		"SQL_DataBase_LS_properties_typeProperties_server": {
-			"value": "adf-assessment-server.database.windows.net"
-		},
-		"SQL_DataBase_LS_properties_typeProperties_database": {
-			"value": "Users"
-		},
-		"SQL_DataBase_LS_properties_typeProperties_userName": {
-			"value": "AdminAishwarya"
 		},
 		"containerUri": {
 			"value": ""
